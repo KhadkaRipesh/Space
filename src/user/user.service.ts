@@ -7,6 +7,7 @@ import { Reminder } from './entities/reminder.entity';
 import { Share } from 'src/space/entities/share.entity';
 import { ResponseReminderDto } from './dto/reminder.dto';
 import { EditProfileDto } from './dto/user.dto';
+import { Space } from 'src/space/entities/space.entity';
 
 @Injectable()
 export class UserService {
@@ -25,22 +26,30 @@ export class UserService {
     const users = await this.dataSource
       .getRepository(User)
       .find({ where: { lastActivity: LessThan(fifteenDaysAgo) } });
+
     for (const user of users) {
-      const message = `<h4>Hello ${user.username}, You are not active for recent 15 days, Wanna give access of space to others.</h4>`;
+      const space = await this.dataSource
+        .getRepository(Space)
+        .findOne({ where: { user_id: user.id } });
 
-      sendmail({
-        to: user.email,
-        subject: 'Give access to Others?',
-        html: message,
-      });
-      // Creating reminder object
-      const reminder = new Reminder();
-      reminder.message = message;
-      reminder.user_id = user.id;
+      if (space) {
+        const message = `<h4>Hello ${user.username}, You are not active for recent 15 days, Wanna give access of space to others.</h4>`;
 
-      // Saving Reminder
-      await this.dataSource.getRepository(Reminder).save(reminder);
+        sendmail({
+          to: user.email,
+          subject: 'Give access to Others?',
+          html: message,
+        });
+        // Creating reminder object
+        const reminder = new Reminder();
+        reminder.message = message;
+        reminder.user_id = user.id;
+
+        // Saving Reminder
+        await this.dataSource.getRepository(Reminder).save(reminder);
+      }
     }
+    return 'Created Reminder for creator.';
   }
 
   // Cron job for not responding reminders
