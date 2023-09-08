@@ -15,9 +15,6 @@ export class Message {
   @Column()
   content: string;
 
-  @Column({ nullable: true })
-  image: string;
-
   @Column()
   space_id: string;
   @ManyToOne(() => Space, (space) => space.messages, { onDelete: 'CASCADE' })

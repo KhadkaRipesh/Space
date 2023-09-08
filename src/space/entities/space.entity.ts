@@ -3,11 +3,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Share } from './share.entity';
-import { Reminder } from 'src/user/entities/reminder.entity';
+import { User } from 'src/user/entities/user.entity';
+import { Member } from './space_member.entity';
 
 @Entity({ name: 'spaces' })
 export class Space {
@@ -25,4 +28,13 @@ export class Space {
 
   @OneToMany(() => Share, (share) => share.space, { cascade: true })
   shares: Share[];
+
+  @OneToMany(() => Member, (member) => member.space, { cascade: true })
+  members: Share[];
+
+  @Column()
+  user_id: string;
+  @ManyToOne(() => User, (user) => user.spaces, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }
