@@ -2,6 +2,8 @@ import { Controller, Get, Res, UseGuards } from '@nestjs/common';
 import { GetUser } from 'src/@docoraters/getUser.decorater';
 import { GoogleAuthGuard } from 'src/@guards/google.guard';
 import { AuthService } from './auth.service';
+import { Response } from 'express';
+
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +16,9 @@ export class AuthController {
     @UseGuards(GoogleAuthGuard)
     googleAsRegister(){}
 
+
+    // --------REGISTER USER FROM GOOGLE CALLBACK-------------
+    
 
     @Get('/google-callback')
     @UseGuards(GoogleAuthGuard)

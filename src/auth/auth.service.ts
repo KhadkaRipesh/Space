@@ -7,7 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   constructor(private dataSource: DataSource, private jwtService: JwtService) {}
-  async registerUserFromGoogle(email: string, name: string) {
+  async registerUserFromGoogle({email,name}: {email: string, name: string} ){
     const user = await this.dataSource
       .getRepository(User)
       .findOne({ where: { email: email } });
