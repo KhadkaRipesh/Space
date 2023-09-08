@@ -17,9 +17,13 @@ export const GOOGLE = {
   password: process.env.GOOGLE_PASSWORD,
 };
 
+<<<<<<< Updated upstream
 export const SMTP = {
   host: process.env.SMTP_HOST,
   port: parseInt(process.env.SMTP_PORT),
   user: process.env.SMTP_USER,
   password: process.env.SMTP_PASSWORD,
 };
+=======
+export const JwtSecret: string = process.env.JWT_SECRET;
+>>>>>>> Stashed changes
