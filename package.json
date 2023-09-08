@@ -26,7 +26,11 @@
     "@nestjs/jwt": "^10.1.1",
     "@nestjs/passport": "^10.0.1",
     "@nestjs/platform-express": "^10.0.0",
+<<<<<<< Updated upstream
     "@nestjs/schedule": "^3.0.3",
+=======
+    "@nestjs/swagger": "^7.1.10",
+>>>>>>> Stashed changes
     "@nestjs/typeorm": "^10.0.0",
     "argon2": "^0.31.1",
     "class-transformer": "^0.5.1",

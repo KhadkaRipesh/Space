@@ -31,6 +31,21 @@ export class User {
   @Column()
   password: string;
 
+<<<<<<< Updated upstream
+=======
+  @Column({nullable: true})
+  userOtp: number;
+
+  @Column()
+  isVerify: boolean;
+
+  @Column({type: 'enum', enum: UserType, default: UserType.USER })
+  user_type: UserType;
+
+  @Column({type: 'enum', enum: AuthType, default: AuthType.EMAIL})
+  auth_type: AuthType; 
+
+>>>>>>> Stashed changes
   @CreateDateColumn()
   createdAt: Date;
 
