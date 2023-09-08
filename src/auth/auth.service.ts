@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { AuthType, User, UserType } from 'src/user/entities/user.entity';
+import { AuthType, User } from 'src/user/entities/user.entity';
 import { DataSource } from 'typeorm';
 import * as argon from 'argon2';
 import { GOOGLE, JwtSecret } from 'src/constant';
@@ -26,7 +26,6 @@ export class AuthService {
       (user.username = name),
         (user.email = email),
         (user.password = await argon.hash(GOOGLE.password)),
-        (user.user_type = UserType.USER),
         (user.auth_type = AuthType.GOOGLE);
       await this.dataSource.getRepository(User).save(user);
     }
@@ -42,7 +41,6 @@ export class AuthService {
     );
     return {
       jwtToken,
-      user_type: newUser.user_type,
     };
   }
 }
