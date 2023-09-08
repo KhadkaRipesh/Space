@@ -66,12 +66,19 @@ export class UserService {
         // Get the shared information from the user
         const shares = await this.dataSource
           .getRepository(Share)
-          .find({ where: { id: user.id } });
+          .find({ where: { user_id: user.id } });
 
-        // Give Access to the shared users
+        // Give access to all user
         for (const share of shares) {
-          share.haveAccess = true;
+          share.hasAccess = true;
           await this.dataSource.getRepository(Share).save(share);
+
+          sendmail({
+            to: share.email,
+            subject: 'Got Space Access',
+            html: `<p>You can access the space now.</p><br>
+                  <h4>Signup and Accept the invitation.</h4>`,
+          });
         }
       }
     }

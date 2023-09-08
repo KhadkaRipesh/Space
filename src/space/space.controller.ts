@@ -6,7 +6,11 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { CreateSpaceDto, ShareSpaceDto } from './dto/space.dto';
+import {
+  AcceptInvitationDto,
+  CreateSpaceDto,
+  ShareSpaceDto,
+} from './dto/space.dto';
 import { SpaceService } from './space.service';
 import { JwtAuthGuard } from 'src/@guards/jwt.guard';
 import { GetUser } from 'src/@docoraters/getUser.decorater';
@@ -28,7 +32,17 @@ export class SpaceController {
   shareSpace(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() payload: ShareSpaceDto,
+    @GetUser() user: User,
   ) {
-    return this.spaceService.shareSpace(payload, id);
+    return this.spaceService.shareSpace(payload, id, user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('accept-invitation')
+  acceptSpaceInvitation(
+    @GetUser() user: User,
+    @Body() payload: AcceptInvitationDto,
+  ) {
+    return this.spaceService.acceptSpaceInvitation(user, payload);
   }
 }

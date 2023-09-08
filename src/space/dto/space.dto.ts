@@ -10,3 +10,7 @@ export class ShareSpaceDto {
   @IsNotEmpty()
   email: string;
 }
+export class AcceptInvitationDto {
+  space_id: string;
+  invitation: string;
+}

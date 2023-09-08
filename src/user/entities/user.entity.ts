@@ -8,6 +8,7 @@ import {
 import { Reminder } from './reminder.entity';
 import { Space } from 'src/space/entities/space.entity';
 import { Member } from 'src/space/entities/space_member.entity';
+import { Share } from 'src/space/entities/share.entity';
 
 export enum AuthType {
   EMAIL = 'EMAIL',
@@ -46,4 +47,7 @@ export class User {
 
   @OneToMany(() => Space, (space) => space.user, { cascade: true })
   spaces: Space[];
+
+  @OneToMany(() => Share, (share) => share.user, { cascade: true })
+  shares: Space[];
 }
