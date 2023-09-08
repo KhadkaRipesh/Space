@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateSpaceDto {
   @IsString()
@@ -11,6 +11,11 @@ export class ShareSpaceDto {
   email: string;
 }
 export class AcceptInvitationDto {
+  @IsUUID()
+  @IsNotEmpty()
   space_id: string;
+
+  @IsNotEmpty()
+  @IsString()
   invitation: string;
 }
