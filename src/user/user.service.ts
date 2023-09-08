@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { DataSource, LessThan } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { sendmail } from 'src/@helpers/mail';
 import { Reminder } from './entities/reminder.entity';
+<<<<<<< Updated upstream
 import { Share } from 'src/space/entities/share.entity';
 import { ResponseReminderDto } from './dto/reminder.dto';
+=======
+import { EditProfileDto } from './dto/user.dto';
+>>>>>>> Stashed changes
 
 @Injectable()
 export class UserService {
@@ -41,6 +45,7 @@ export class UserService {
       await this.dataSource.getRepository(Reminder).save(reminder);
     }
   }
+<<<<<<< Updated upstream
 
   // Cron job for not responding reminders
 
@@ -84,5 +89,20 @@ export class UserService {
     if (giveAccess === 'yes') {
       await this.dataSource.getRepository(Reminder).remove(reminder);
     }
+=======
+  async editProfile(id: string, user: User, payload: EditProfileDto) {
+    const { username, email } = payload;
+    console.log(payload);
+    const getUser = await this.dataSource
+      .getRepository(User)
+      .findOne({ where: { id: id } });
+    if (!getUser)
+      throw new BadRequestException('User with this id is not found.');
+
+    if (getUser) {  
+      (getUser.username = username), (getUser.email = email);
+    }
+    return await this.dataSource.getRepository(User).save(getUser);
+>>>>>>> Stashed changes
   }
 }
