@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Space } from './space.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Entity({ name: 'shares' })
 export class Share {
@@ -20,7 +21,7 @@ export class Share {
   createdAt: Date;
 
   @Column({ default: false })
-  haveAccess: boolean;
+  hasAccess: boolean;
 
   // ************Relations***********
   @Column()
@@ -28,4 +29,10 @@ export class Share {
   @ManyToOne(() => Space, (space) => space.shares, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'space_id' })
   space: Space;
+
+  @Column()
+  user_id: string;
+  @ManyToOne(() => User, (user) => user.shares, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }
