@@ -23,3 +23,6 @@ export const SMTP = {
   user: process.env.SMTP_USER,
   password: process.env.SMTP_PASSWORD,
 };
+
+export const JwtSecret: string = process.env.JWT_SECRET;
+
