@@ -7,10 +7,6 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   controllers: [AuthController],
-<<<<<<< Updated upstream
-  providers: [AuthService, JwtService, GoogleStrategy],
-=======
   providers: [AuthService, JwtService, GoogleStrategy, JwtStrategy],
->>>>>>> Stashed changes
 })
 export class AuthModule {}
