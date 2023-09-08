@@ -9,3 +9,10 @@ export const DATABASE = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
 };
+
+export const GOOGLE = {
+  clientID: process.env.CLIENT_ID,
+  clientSecret: process.env.CLIENT_SECRET,
+  callbackURL: process.env.CALLBACKURL,
+  password: process.env.GOOGLE_PASSWORD,
+};
