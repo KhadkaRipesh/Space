@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Share } from './share.entity';
+import { Reminder } from 'src/user/entities/reminder.entity';
 
 @Entity({ name: 'spaces' })
 export class Space {
