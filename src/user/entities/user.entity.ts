@@ -2,8 +2,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Reminder } from './reminder.entity';
 
 export enum UserType {
   ADMIN = 'ADMIN',
@@ -34,4 +36,13 @@ export class User {
 
   @Column({ default: new Date() })
   lastActivity: Date;
+
+  @Column({ type: 'enum', enum: UserType, default: UserType.USER })
+  user_type: UserType;
+
+  @Column({ type: 'enum', enum: AuthType, default: AuthType.EMAIL })
+  auth_type: AuthType;
+
+  @OneToMany(() => Reminder, (reminder) => reminder.user, { cascade: true })
+  reminders: Reminder[];
 }

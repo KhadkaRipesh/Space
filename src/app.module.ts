@@ -7,12 +7,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfig } from './@config/typeorm.config';
 import { SpaceModule } from './space/space.module';
 import { MessageModule } from './message/message.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     AuthModule,
     UserModule,
     TypeOrmModule.forRootAsync({ useFactory: () => TypeOrmConfig }),
+    ScheduleModule.forRoot(),
     SpaceModule,
     MessageModule,
   ],
