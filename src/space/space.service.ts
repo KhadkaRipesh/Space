@@ -4,13 +4,15 @@ import { CreateSpaceDto, ShareSpaceDto } from './dto/space.dto';
 import { Space } from './entities/space.entity';
 import { Share } from './entities/share.entity';
 import { sendmail } from 'src/@helpers/mail';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class SpaceService {
   constructor(private readonly dataSource: DataSource) {}
 
   //   ----------Create Space--------------
-  createSpace(payload: CreateSpaceDto) {
+  createSpace(user: User, payload: CreateSpaceDto) {
+    console.log(user);
     return this.dataSource.getRepository(Space).save(payload);
   }
 

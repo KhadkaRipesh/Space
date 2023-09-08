@@ -9,6 +9,8 @@ import {
 import { CreateSpaceDto, ShareSpaceDto } from './dto/space.dto';
 import { SpaceService } from './space.service';
 import { JwtAuthGuard } from 'src/@guards/jwt.guard';
+import { GetUser } from 'src/@docoraters/getUser.decorater';
+import { User } from 'src/user/entities/user.entity';
 
 @Controller('space')
 export class SpaceController {
@@ -17,8 +19,8 @@ export class SpaceController {
   //   -----------------Create Space---------------
   @UseGuards(JwtAuthGuard)
   @Post('create-space')
-  createSpace(@Body() payload: CreateSpaceDto) {
-    return this.spaceService.createSpace(payload);
+  createSpace(@GetUser() user: User, @Body() payload: CreateSpaceDto) {
+    return this.spaceService.createSpace(user, payload);
   }
   //   -----------------Share Space----------------
   @Post('share-space/:id')
