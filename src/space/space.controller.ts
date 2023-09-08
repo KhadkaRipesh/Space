@@ -1,4 +1,11 @@
-import { Body, Controller, Param, ParseUUIDPipe, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateSpaceDto, ShareSpaceDto } from './dto/space.dto';
 import { SpaceService } from './space.service';
 import { JwtAuthGuard } from 'src/@guards/jwt.guard';
