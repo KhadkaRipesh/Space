@@ -11,7 +11,6 @@ import { UserService } from './user.service';
 import { ResponseReminderDto } from './dto/reminder.dto';
 
 import { JwtAuthGuard } from 'src/@guards/jwt.guard';
-import { RoleGuard } from 'src/auth/strategies/role.guard';
 import { User } from './entities/user.entity';
 import { GetUser } from 'src/@docoraters/getUser.decorater';
 import { EditProfileDto } from './dto/user.dto';
@@ -30,7 +29,7 @@ export class UserController {
   }
 
   @Patch('/update-profile/:id')
-  @UseGuards(JwtAuthGuard, RoleGuard)
+  @UseGuards(JwtAuthGuard)
   updateProfile(
     @GetUser() user: User,
     @Param('id', new ParseUUIDPipe()) id: string,
