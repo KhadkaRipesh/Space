@@ -38,4 +38,6 @@ export class SpaceService {
     // Saving share
     await this.dataSource.getRepository(Share).save(share);
   }
+
+  //   -------CronJob for userActivation
 }

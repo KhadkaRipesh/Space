@@ -19,6 +19,9 @@ export class Share {
   @CreateDateColumn()
   createdAt: Date;
 
+  @Column({ default: false })
+  haveAccess: boolean;
+
   // ************Relations***********
   @Column()
   space_id: string;

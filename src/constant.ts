@@ -25,4 +25,3 @@ export const SMTP = {
 };
 
 export const JwtSecret: string = process.env.JWT_SECRET;
-
