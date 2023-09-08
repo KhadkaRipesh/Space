@@ -30,6 +30,8 @@ export class AuthService {
         (user.auth_type = AuthType.GOOGLE);
       await this.dataSource.getRepository(User).save(user);
     }
+    console.log(GOOGLE.password);
+
     const newUser = await this.dataSource
       .getRepository(User)
       .findOne({ where: { email: email } });
