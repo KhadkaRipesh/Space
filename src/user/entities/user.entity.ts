@@ -9,10 +9,6 @@ import { Reminder } from './reminder.entity';
 import { Space } from 'src/space/entities/space.entity';
 import { Member } from 'src/space/entities/space_member.entity';
 
-export enum UserType {
-  ADMIN = 'ADMIN',
-  USER = 'USER',
-}
 export enum AuthType {
   EMAIL = 'EMAIL',
   GOOGLE = 'GOOGLE',
@@ -32,12 +28,6 @@ export class User {
 
   @Column()
   password: string;
-
-  @Column()
-  isVerify: boolean;
-
-  @Column({ type: 'enum', enum: UserType, default: UserType.USER })
-  user_type: UserType;
 
   @Column({ type: 'enum', enum: AuthType, default: AuthType.EMAIL })
   auth_type: AuthType;
