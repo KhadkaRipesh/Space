@@ -1,15 +1,19 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
   Param,
   ParseUUIDPipe,
   Post,
+  Patch,
   UseGuards,
 } from '@nestjs/common';
 import {
   AcceptInvitationDto,
   CreateSpaceDto,
   ShareSpaceDto,
+  UpdateSpaceDto,
 } from './dto/space.dto';
 import { SpaceService } from './space.service';
 import { JwtAuthGuard } from 'src/@guards/jwt.guard';
@@ -45,4 +49,40 @@ export class SpaceController {
   ) {
     return this.spaceService.acceptSpaceInvitation(user, payload);
   }
-}
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/all-spaces')
+  getAllSpaces() {
+    return this.spaceService.getAllSpacesByCreator();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:id')
+  getSpaces(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.spaceService.getSpacesByCreator(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:id')
+  getCreatedMessage(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.spaceService.findCreatedMessage(id);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Delete('/delete/:id')
+  removeSpace(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @GetUser() user: User,
+  ) {
+    return this.spaceService.deleteSpaces(id,user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('update-space/:id')
+  updateSpace(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @GetUser() user: User,
+    @Body() updateSpaceDto: UpdateSpaceDto,
+  ) {
+    return this.spaceService.editSpaceById(id,user,updateSpaceDto);
+  }
+  }

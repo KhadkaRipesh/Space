@@ -14,3 +14,8 @@ export class AcceptInvitationDto {
   space_id: string;
   invitation: string;
 }
+export class UpdateSpaceDto{
+  @IsString()
+  @IsNotEmpty()
+  space_name: string;
+}
