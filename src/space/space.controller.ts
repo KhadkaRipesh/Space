@@ -41,6 +41,7 @@ export class SpaceController {
     return this.spaceService.shareSpace(payload, id, user);
   }
 
+  // ----------------Accept the invitation--------------
   @UseGuards(JwtAuthGuard)
   @Post('accept-invitation')
   acceptSpaceInvitation(
@@ -84,6 +85,7 @@ export class SpaceController {
     @Body() updateSpaceDto: UpdateSpaceDto,
   ) {
     return this.spaceService.editSpaceById(id, user, updateSpaceDto);
+
   }
   @Get('/get-message/:id')
   @UseGuards(JwtAuthGuard)

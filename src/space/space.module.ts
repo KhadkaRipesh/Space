@@ -4,6 +4,6 @@ import { SpaceService } from './space.service';
 
 @Module({
   controllers: [SpaceController],
-  providers: [SpaceService]
+  providers: [SpaceService],
 })
 export class SpaceModule {}

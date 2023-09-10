@@ -21,6 +21,7 @@ export class AuthController {
   @Get('/register/google')
   @ApiOperation({ summary: 'Register user through google' })
   @UseGuards(GoogleAuthGuard)
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   googleAsRegister() {}
 
   // --------REGISTER USER FROM GOOGLE CALLBACK-------------
