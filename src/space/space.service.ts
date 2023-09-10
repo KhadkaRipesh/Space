@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import {
@@ -108,95 +109,58 @@ export class SpaceService {
       member.space_id = space_id;
       member.user_id = currentuser.id;
 
+      await this.dataSource.getRepository(Member).save(member);
       return 'Now you can access the data of the space.';
     }
   }
-  // ----------GET ALL SPACES--------------
-  async getAllSpacesByCreator() {
-    const spaces = await this.dataSource.getRepository(Space).find();
-    if (!spaces) throw new BadRequestException('Spaces Not Found..');
-    return spaces;
-  }
-  //---------GET CREATED SPACE --------------
-  async getSpacesByCreator(id: string) {
-    const spaces = await this.dataSource
-      .getRepository(Space)
-      .findOne({ where: { id: id } });
-    if (!spaces) throw new BadRequestException('Spaces not found');
-    if (spaces) {
-      console.log(spaces);
-      return spaces;
-    }
-  }
-  // ------------FIND CREATED MESSAGE ------------------
-  async findCreatedMessage(id: string) {
-    const messages = await this.dataSource
-      .getRepository(Message)
-      .findOne({ where: { id: id } });
-    if (!messages) throw new BadRequestException('Messages not found..');
 
-    if (messages) {
-      return messages;
+  //---------GET ACCESSIABLE SPACE --------------
+  async getSpacesByCreator(user: User) {
+    const members = await this.dataSource
+      .getRepository(Member)
+      .find({ where: { user_id: user.id } });
+
+    if (!members) throw new BadRequestException('No spaces');
+    const membersWithSpaces = [];
+    for (const member of members) {
+      const space = await this.dataSource
+        .getRepository(Space)
+        .findOne({ where: { id: member.space_id } });
+      membersWithSpaces.push(space);
     }
+    return membersWithSpaces;
   }
+
   //--------------DELETED CREATED SPACE -----------------
   async deleteSpaces(id: string, currentUser: User) {
-    const userExist = await this.dataSource
-      .getRepository(User)
-      .findOne({ where: { id: currentUser.id } });
-    if (!userExist)
-      throw new BadRequestException(
-        'User of this spaces creator is not found.',
-      );
-    const findSpaces = await this.dataSource
-      .getRepository(Space)
-      .findOne({ where: { id: id } });
-    if (!findSpaces) throw new BadRequestException('Spaces not found.');
-    if (findSpaces) {
-      return await this.dataSource.getRepository(Space).remove(findSpaces);
-    }
+    const member = await this.dataSource
+      .getRepository(Member)
+      .findOne({ where: { user_id: currentUser.id, space_id: id } });
+
+    // Check if the space is available or not
+    if (!member)
+      throw new NotFoundException('Space not found of the current user.');
+
+    await this.dataSource.getRepository(Space).delete(id);
+
+    return `${member.space_id} deleted successfully.`;
   }
 
   // -------------EDIT SPACE ---------------------
   async editSpaceById(id: string, currentUser: User, payload: UpdateSpaceDto) {
     const { space_name } = payload;
-    const userExist = await this.dataSource
-      .getRepository(User)
-      .findOne({ where: { id: currentUser.id } });
-    if (!userExist) throw new BadRequestException('User not found.');
 
-    const existSpaces = await this.dataSource
+    const member = await this.dataSource
+      .getRepository(Member)
+      .findOne({ where: { user_id: currentUser.id, space_id: id } });
+
+    if (!member) throw new NotFoundException('Not found or permission denied.');
+
+    // Update space details
+    await this.dataSource
       .getRepository(Space)
-      .findOneBy({ id });
-    if (!existSpaces) throw new BadRequestException('Space not found.');
+      .update(id, { space_name: space_name });
 
-    existSpaces.space_name = space_name;
-    await this.dataSource.getRepository(Space).save(existSpaces);
-  }
-  //------------------Find Created message by space id---------------
-  async findMessagesById(currentUser: User, id: string) {
-    const user = await this.dataSource
-      .getRepository(User)
-      .findOne({ where: { id: currentUser.id } });
-    if (!user) throw new BadRequestException('User Not Found');
-    const findMessage = await this.dataSource
-      .getRepository(Space)
-      .findOne({ where: { id: id } });
-    if (!findMessage) throw new BadRequestException('Message not found.');
-    if (user && findMessage) {
-      return await this.dataSource.getRepository(Message).find();
-    }
-  }
-
-  // -------------- FIND ALL MESSAGE -----------------
-  async findAllMessage(currentUser: User) {
-    const user = await this.dataSource
-      .getRepository(User)
-      .findOne({ where: { id: currentUser.id } });
-    console.log(user);
-    if (!user) throw new BadRequestException('User not found');
-    if (user) {
-      return await this.dataSource.getRepository(Message).find();
-    }
+    return `${member.space_id} updated successfully.`;
   }
 }

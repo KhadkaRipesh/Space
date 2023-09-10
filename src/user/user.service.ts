@@ -13,9 +13,14 @@ import { Space } from 'src/space/entities/space.entity';
 export class UserService {
   constructor(private readonly dataSource: DataSource) {}
   //   Update UserActivity
-  async updateUserActivity(user: User) {
-    user.lastActivity = new Date();
-    await this.dataSource.getRepository(User).save(user);
+  async updateUserActivity(userId: string) {
+    const user = await this.dataSource
+      .getRepository(User)
+      .findOne({ where: { id: userId } });
+    if (user) {
+      user.lastActivity = new Date();
+      await this.dataSource.getRepository(User).save(user);
+    }
   }
 
   //   Cron Job for checking inactive user
@@ -92,7 +97,7 @@ export class UserService {
       }
     }
   }
-  
+
   async responseToReminder(id: string, payload: ResponseReminderDto) {
     const { giveAccess } = payload;
     const reminder = await this.dataSource

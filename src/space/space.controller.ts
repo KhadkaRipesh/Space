@@ -19,25 +19,34 @@ import { SpaceService } from './space.service';
 import { JwtAuthGuard } from 'src/@guards/jwt.guard';
 import { GetUser } from 'src/@docoraters/getUser.decorater';
 import { User } from 'src/user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
 
 @Controller('space')
 export class SpaceController {
-  constructor(private readonly spaceService: SpaceService) {}
+  constructor(
+    private readonly spaceService: SpaceService,
+    private readonly userService: UserService,
+  ) {}
 
   //   -----------------Create Space---------------
   @UseGuards(JwtAuthGuard)
   @Post('create-space')
-  createSpace(@GetUser() user: User, @Body() payload: CreateSpaceDto) {
+  async createSpace(@GetUser() user: User, @Body() payload: CreateSpaceDto) {
+    // Updating user last activity
+    await this.userService.updateUserActivity(user.id);
+
     return this.spaceService.createSpace(user, payload);
   }
   //   -----------------Share Space----------------
   @Post('share-space/:id')
   @UseGuards(JwtAuthGuard)
-  shareSpace(
+  async shareSpace(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() payload: ShareSpaceDto,
     @GetUser() user: User,
   ) {
+    // Updating user last activity
+    await this.userService.updateUserActivity(user.id);
     return this.spaceService.shareSpace(payload, id, user);
   }
 
@@ -51,52 +60,37 @@ export class SpaceController {
     return this.spaceService.acceptSpaceInvitation(user, payload);
   }
 
+  // To get accessiable space
   @UseGuards(JwtAuthGuard)
-  @Get('/all-spaces')
-  getAllSpaces() {
-    return this.spaceService.getAllSpacesByCreator();
+  @Get('get-my-space')
+  async getSpaces(@GetUser() user: User) {
+    // Updating user last activity
+    await this.userService.updateUserActivity(user.id);
+    return this.spaceService.getSpacesByCreator(user);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/:id')
-  getSpaces(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.spaceService.getSpacesByCreator(id);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('/:id')
-  getCreatedMessage(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.spaceService.findCreatedMessage(id);
-  }
-  @UseGuards(JwtAuthGuard)
-  @Delete('/delete/:id')
-  removeSpace(
+  @Delete(':id')
+  async removeSpace(
     @Param('id', new ParseUUIDPipe()) id: string,
     @GetUser() user: User,
   ) {
+    // Updating user last activity
+    await this.userService.updateUserActivity(user.id);
+
     return this.spaceService.deleteSpaces(id, user);
   }
 
+  // update Space
   @UseGuards(JwtAuthGuard)
-  @Patch('update-space/:id')
-  updateSpace(
+  @Patch(':id')
+  async updateSpace(
     @Param('id', new ParseUUIDPipe()) id: string,
     @GetUser() user: User,
     @Body() updateSpaceDto: UpdateSpaceDto,
   ) {
+    // Updating user last activity
+    await this.userService.updateUserActivity(user.id);
     return this.spaceService.editSpaceById(id, user, updateSpaceDto);
-  }
-  @Get('/get-message/:id')
-  @UseGuards(JwtAuthGuard)
-  getMessage(
-    @GetUser() user: User,
-    @Param('id', new ParseUUIDPipe()) id: string,
-  ) {
-    return this.spaceService.findMessagesById(user, id);
-  }
-  @Get('/get-all-message')
-  @UseGuards(JwtAuthGuard)
-  getAllMessages(@GetUser() user: User) {
-    return this.spaceService.findAllMessage(user);
   }
 }
