@@ -4,4 +4,8 @@ export class CreateMessageDto {
   @IsString()
   @IsNotEmpty()
   content: string;
+
+  @IsString()
+  @IsNotEmpty()
+  space_id:string;
 }
