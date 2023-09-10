@@ -26,7 +26,6 @@ jobs:
         
       - name: Deploy to VM
         run: |
-          sshpass -p 'Secret@12345' ssh -o StrictHostKeyChecking=no last-message@20.193.158.103"
-          cd /home/last-message/Space/ &&
-          git pull origin master &&
-          pm2 restart 1"
+          sshpass -p 'Secret@12345' ssh -o StrictHostKeyChecking=no last-message@20.193.158.103 \
+          "cd /home/last-message/Space/ && git pull origin master && pm2 restart 1"
+
