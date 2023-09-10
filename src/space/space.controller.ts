@@ -115,19 +115,19 @@ export class SpaceController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @ApiBearerAuth('Auth')
-<<<<<<< Updated upstream
-  @ApiOperation({summary: 'Update the Space'})
-  @ApiCreatedResponse({description: 'Update Space sucessfully', type: UpdateSpaceDto})
-  @ApiOkResponse({description: 'Sucessfully update a space'})
-  @ApiBadRequestResponse({description: 'Failed to Update a space'})
-=======
+  @ApiOperation({ summary: 'Update the Space' })
+  @ApiCreatedResponse({
+    description: 'Update Space sucessfully',
+    type: UpdateSpaceDto,
+  })
+  @ApiOkResponse({ description: 'Sucessfully update a space' })
+  @ApiBadRequestResponse({ description: 'Failed to Update a space' })
   @ApiOperation({ summary: 'Update the Space' })
   @ApiCreatedResponse({
     description: 'Update Space sucessfully',
     type: UpdateSpaceDto,
   })
   @ApiOkResponse({ description: '' })
->>>>>>> Stashed changes
   async updateSpace(
     @Param('id', new ParseUUIDPipe()) id: string,
     @GetUser() user: User,

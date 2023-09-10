@@ -27,7 +27,10 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Patch('/update-profile/:id')
   @ApiBearerAuth('Auth')
-  @ApiCreatedResponse({description: 'Update user profile sucessfully', type:EditProfileDto})
+  @ApiCreatedResponse({
+    description: 'Update user profile sucessfully',
+    type: EditProfileDto,
+  })
   @ApiOperation({ summary: 'Update User Profile' })
   @ApiOkResponse({ description: 'Update User Profile Sucessfully' })
   @ApiBadRequestResponse({ description: 'Failed to update the profile' })
