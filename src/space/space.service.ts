@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import {
-  AcceptInvitationDto,
   CreateSpaceDto,
   ShareSpaceDto,
   UpdateSpaceDto,

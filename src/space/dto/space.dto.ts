@@ -10,11 +10,7 @@ export class ShareSpaceDto {
   @IsNotEmpty()
   email: string;
 }
-export class AcceptInvitationDto {
-  @IsUUID()
-  @IsNotEmpty()
-  space_id: string;
-}
+
 export class UpdateSpaceDto {
   @IsString()
   @IsNotEmpty()
