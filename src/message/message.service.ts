@@ -8,6 +8,8 @@ import { Member } from 'src/space/entities/space_member.entity';
 @Injectable()
 export class MessageService {
   constructor(private readonly dataSource: DataSource) {}
+
+  // --------------CREATE MESSAGE WITHIN SPACE --------------------
   async createMessage(currentUser: User, payload: CreateMessageDto) {
     const { content, space_id } = payload;
     // For checking if the user is has access of the space or not.

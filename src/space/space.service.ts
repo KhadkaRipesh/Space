@@ -111,11 +111,13 @@ export class SpaceService {
       return 'Now you can access the data of the space.';
     }
   }
+  // ----------GET ALL SPACES--------------
   async getAllSpacesByCreator() {
     const spaces = await this.dataSource.getRepository(Space).find();
     if (!spaces) throw new BadRequestException('Spaces Not Found..');
     return spaces;
   }
+  //---------GET CREATED SPACE --------------
   async getSpacesByCreator(id: string) {
     const spaces = await this.dataSource
       .getRepository(Space)
@@ -126,6 +128,7 @@ export class SpaceService {
       return spaces;
     }
   }
+  // ------------FIND CREATED MESSAGE ------------------
   async findCreatedMessage(id: string) {
     const messages = await this.dataSource
       .getRepository(Message)
@@ -136,6 +139,7 @@ export class SpaceService {
       return messages;
     }
   }
+  //--------------DELETED CREATED SPACE -----------------
   async deleteSpaces(id: string, currentUser: User) {
     const userExist = await this.dataSource
       .getRepository(User)
@@ -152,6 +156,8 @@ export class SpaceService {
       return await this.dataSource.getRepository(Space).remove(findSpaces);
     }
   }
+
+  // -------------EDIT SPACE ---------------------
   async editSpaceById(id: string, currentUser: User, payload: UpdateSpaceDto) {
     const { space_name } = payload;
     const userExist = await this.dataSource
@@ -167,6 +173,7 @@ export class SpaceService {
     existSpaces.space_name = space_name;
     await this.dataSource.getRepository(Space).save(existSpaces);
   }
+  //------------------Find Created message by space id---------------
   async findMessagesById(currentUser: User, id: string) {
     const user = await this.dataSource
       .getRepository(User)
@@ -180,6 +187,8 @@ export class SpaceService {
       return await this.dataSource.getRepository(Message).find();
     }
   }
+
+  // -------------- FIND ALL MESSAGE -----------------
   async findAllMessage(currentUser: User) {
     const user = await this.dataSource
       .getRepository(User)

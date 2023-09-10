@@ -92,7 +92,7 @@ export class UserService {
       }
     }
   }
-
+  
   async responseToReminder(id: string, payload: ResponseReminderDto) {
     const { giveAccess } = payload;
     const reminder = await this.dataSource
