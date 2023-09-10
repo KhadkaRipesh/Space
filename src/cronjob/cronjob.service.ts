@@ -10,46 +10,56 @@ import { Reminder } from 'src/user/entities/reminder.entity';
 @Injectable()
 export class CronjobService {
   constructor(private readonly dataSource: DataSource) {}
+
   //   Cron Job for checking inactive user
   @Cron(CronExpression.EVERY_10_SECONDS)
   async handleCron() {
     const fifteenDaysAgo = new Date();
+
     // Checking user last activity since 15 days
     fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
+
+    // Getting user data, not active since 15 days
     const users = await this.dataSource.getRepository(User).find({
       where: { lastActivity: LessThan(fifteenDaysAgo), hasExpired: false },
     });
+
     for (const user of users) {
       const space = await this.dataSource
         .getRepository(Space)
         .findOne({ where: { user_id: user.id } });
 
+      // If user has their space
       if (space) {
         const isShare = await this.dataSource
           .getRepository(Share)
           .findOne({ where: { space_id: space.id } });
+
+        //   If user shares any space then,
         if (isShare) {
+          // Getting reminder data
           const hasReminder = await this.dataSource
             .getRepository(Reminder)
             .findOne({ where: { user_id: user.id } });
 
-          const hasNotResponed = await this.dataSource
-            .getRepository(Reminder)
-            .findOne({ where: { user_id: user.id, hasResponed: false } });
-
-          if (!hasReminder || !hasNotResponed) {
+          // If there is no reminder for user or user respond to previous reminder
+          if (!hasReminder || hasReminder.hasResponed === true) {
             const message = `<h4>Hello ${user.username}, You are not active for recent 15 days, Wanna give access of space to others?,
                 If no, Go online.</h4>`;
+
+            // Send Mail
             sendmail({
               to: user.email,
               subject: 'Give access to Others?',
               html: message,
             });
+
             // Creating reminder object
             const reminder = new Reminder();
             reminder.message = message;
             reminder.user_id = user.id;
             reminder.hasResponed = false;
+
             // Saving Reminder
             await this.dataSource.getRepository(Reminder).save(reminder);
           }
@@ -62,32 +72,39 @@ export class CronjobService {
   //   Cron job for not responding reminders
   @Cron(CronExpression.EVERY_10_SECONDS)
   async handleCron2() {
-    const hoursToCheck = 42 * 60 * 60 * 1000;
+    const hoursToCheck = 42 * 60 * 60 * 1000; // converting to milliseconds
     // const hoursToCheck = 20 * 1000;
+
+    // Getting unresponed reminder
     const reminders = await this.dataSource
       .getRepository(Reminder)
       .find({ where: { hasResponed: false } });
 
+    //   If reminder exists
     if (reminders.length > 0) {
       for (const reminder of reminders) {
         const currentDate = new Date();
         const createdDate = reminder.createdAt;
         const timeDiff = currentDate.getTime() - createdDate.getTime();
+
+        // Checking time difference between current and created time of remainder with hours to check
         if (timeDiff >= hoursToCheck) {
-          console.log(reminders);
           // Get user from the reminder
           const user = await this.dataSource
             .getRepository(User)
             .findOne({ where: { id: reminder.user_id } });
           if (user) {
-            // Update the user's 'expired' property to true
+            // Expire the inactive user
             user.hasExpired = true;
+
+            // save the current user
             await this.dataSource.getRepository(User).save(user);
 
             // Get the shared information from the user
             const shares = await this.dataSource
               .getRepository(Share)
               .find({ where: { user_id: user.id } });
+
             // Give access to all user
             for (const share of shares) {
               share.hasAccess = true;
@@ -99,6 +116,7 @@ export class CronjobService {
                   <h4>Signup and Accept the invitation.</h4>`,
               });
             }
+            // Delete the reminder
             await this.dataSource.getRepository(Reminder).remove(reminder);
           }
         }
