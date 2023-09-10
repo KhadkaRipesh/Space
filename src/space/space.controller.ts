@@ -73,7 +73,7 @@ export class SpaceController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @GetUser() user: User,
   ) {
-    return this.spaceService.deleteSpaces(id,user);
+    return this.spaceService.deleteSpaces(id, user);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -83,6 +83,19 @@ export class SpaceController {
     @GetUser() user: User,
     @Body() updateSpaceDto: UpdateSpaceDto,
   ) {
-    return this.spaceService.editSpaceById(id,user,updateSpaceDto);
+    return this.spaceService.editSpaceById(id, user, updateSpaceDto);
   }
+  @Get('/get-message/:id')
+  @UseGuards(JwtAuthGuard)
+  getMessage(
+    @GetUser() user: User,
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ) {
+    return this.spaceService.findMessagesById(user, id);
   }
+  @Get('/get-all-message')
+  @UseGuards(JwtAuthGuard)
+  getAllMessages(@GetUser() user: User) {
+    return this.spaceService.findAllMessage(user);
+  }
+}

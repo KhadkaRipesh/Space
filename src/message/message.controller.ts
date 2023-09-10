@@ -14,14 +14,6 @@ export class MessageController {
     createMessage(@GetUser() user: User, @Body() payload: CreateMessageDto){
         return this.messageService.createMessage(user, payload);
     }
-    @Get('/get-all-message')
-    @UseGuards(JwtAuthGuard)
-    getAllMessages(@GetUser() user: User){
-        return this.messageService.findAllMessage(user);
-    }
-    @Get('/get-message/:id')
-    @UseGuards(JwtAuthGuard)
-    getMessage(@GetUser() user: User, @Param('id', new ParseUUIDPipe())id: string) {
-        return this.messageService.findMessagesById(user, id);
-    }
+    
+    
 }

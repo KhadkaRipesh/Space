@@ -28,26 +28,6 @@ export class MessageService {
       throw new BadRequestException('Failed to create message');
     }
   }
-  async findAllMessage(currentUser: User) {
-    const user = await this.dataSource
-      .getRepository(User)
-      .findOne({ where: { id: currentUser.id } });
-    if (!user) throw new BadRequestException('User not found');
-    if (user) {
-      return await this.dataSource.getRepository(Message).find();
-    }
-  }
-  async findMessagesById(currentUser: User, id: string) {
-    const user = await this.dataSource
-      .getRepository(User)
-      .findOne({ where: { id: currentUser.id } });
-    if (!user) throw new BadRequestException('User Not Found');
-    const message = await this.dataSource
-      .getRepository(Message)
-      .findOne({ where: { id: id } });
-    if (!message) throw new BadRequestException('Message not found.');
-    if (user && message) {
-      return message;
-    }
-  }
+ 
+  
 }

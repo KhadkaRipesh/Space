@@ -167,4 +167,27 @@ export class SpaceService {
     existSpaces.space_name = space_name;
     await this.dataSource.getRepository(Space).save(existSpaces);
   }
+  async findMessagesById(currentUser: User, id: string) {
+    const user = await this.dataSource
+      .getRepository(User)
+      .findOne({ where: { id: currentUser.id } });
+    if (!user) throw new BadRequestException('User Not Found');
+    const findMessage = await this.dataSource
+      .getRepository(Space)
+      .findOne({ where: { id: id } });
+    if (!findMessage) throw new BadRequestException('Message not found.');
+    if (user && findMessage) {
+      return await this.dataSource.getRepository(Message).find();
+    }
+  }
+  async findAllMessage(currentUser: User) {
+    const user = await this.dataSource
+      .getRepository(User)
+      .findOne({ where: { id: currentUser.id } });
+      console.log(user)
+    if (!user) throw new BadRequestException('User not found');
+    if (user) {
+      return await this.dataSource.getRepository(Message).find();
+    }
+  }
 }
