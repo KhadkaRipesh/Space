@@ -15,6 +15,7 @@ import { EditProfileDto } from './dto/user.dto';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
@@ -23,9 +24,10 @@ import {
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Patch('/update-profile/:id')
   @UseGuards(JwtAuthGuard)
+  @Patch('/update-profile/:id')
   @ApiBearerAuth('Auth')
+  @ApiCreatedResponse({description: 'Update user profile sucessfully', type:EditProfileDto})
   @ApiOperation({ summary: 'Update User Profile' })
   @ApiOkResponse({ description: 'Update User Profile Sucessfully' })
   @ApiBadRequestResponse({ description: 'Failed to update the profile' })

@@ -13,6 +13,7 @@ import { GetUser } from 'src/@docoraters/getUser.decorater';
 import { User } from 'src/user/entities/user.entity';
 import { CreateMessageDto } from './dto/message.dto';
 import { UserService } from 'src/user/user.service';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 
 @Controller('message')
 export class MessageController {
@@ -22,8 +23,13 @@ export class MessageController {
   ) {}
 
   //-------------CREATE MESSAGE ROUTE -----------------
-  @Post()
   @UseGuards(JwtAuthGuard)
+  @Post()
+  @ApiBearerAuth("Auth")
+  @ApiOperation({summary: 'Create a Message'})
+  @ApiCreatedResponse({description: 'Sucessfully created a message', type: CreateMessageDto })
+  @ApiOkResponse({description: 'Sucessfully created a message'})
+  @ApiBadRequestResponse({description: 'Failed to create a Message'})
   async createMessage(
     @GetUser() user: User,
     @Body() payload: CreateMessageDto,
@@ -34,8 +40,12 @@ export class MessageController {
   }
 
   //   Get Message of specific space
-  @Get(':id')
   @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  @ApiBearerAuth('Auth')
+  @ApiOperation({summary: 'Sucessfully get a message'})
+  @ApiOkResponse({description: 'Sucessfully getting a message'})
+  @ApiBadRequestResponse({description: 'Failed to get a message'})
   async getMessage(
     @GetUser() user: User,
     @Param('id', new ParseUUIDPipe()) id: string,

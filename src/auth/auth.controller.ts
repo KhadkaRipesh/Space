@@ -10,7 +10,7 @@ import { GetUser } from 'src/@docoraters/getUser.decorater';
 import { GoogleAuthGuard } from 'src/@guards/google.guard';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -18,9 +18,9 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   // ------------REGISTER USER BY GOOGLE-------------
+  @UseGuards(GoogleAuthGuard)
   @Get('/register/google')
   @ApiOperation({ summary: 'Register user through google' })
-  @UseGuards(GoogleAuthGuard)
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   googleAsRegister() {}
 
