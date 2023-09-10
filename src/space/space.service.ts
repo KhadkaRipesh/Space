@@ -4,16 +4,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import {
-  CreateSpaceDto,
-  ShareSpaceDto,
-  UpdateSpaceDto,
-} from './dto/space.dto';
+import { CreateSpaceDto, ShareSpaceDto, UpdateSpaceDto } from './dto/space.dto';
 import { Space } from './entities/space.entity';
 import { Share } from './entities/share.entity';
 import { sendmail } from 'src/@helpers/mail';
 import { User } from 'src/user/entities/user.entity';
 import { Member } from './entities/space_member.entity';
+import { defaultMailTemplate } from 'src/@helpers/mail-templates/default.mail-template';
 
 @Injectable()
 export class SpaceService {
@@ -75,8 +72,12 @@ export class SpaceService {
 
     sendmail({
       to: email,
-      subject: 'Space Shared for you',
-      html: `<h1> The space is shared with you.</h1>`,
+      subject: 'Space Shared with You',
+      html: defaultMailTemplate({
+        title: 'Space Shared with You',
+        name: share.email,
+        message: `We are excited to inform you that a space has been shared with you. Please note that access to this space will become active after 15 days of my unactiviness`,
+      }),
     });
     // Saving share
     await this.dataSource.getRepository(Share).save(share);

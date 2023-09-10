@@ -15,6 +15,7 @@ export class UserService {
       .findOne({ where: { id: userId } });
     if (user) {
       user.lastActivity = new Date();
+      user.hasExpired = false;
       await this.dataSource.getRepository(User).save(user);
 
       const reminders = await this.dataSource
