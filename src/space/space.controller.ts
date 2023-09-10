@@ -85,5 +85,19 @@ export class SpaceController {
     @Body() updateSpaceDto: UpdateSpaceDto,
   ) {
     return this.spaceService.editSpaceById(id, user, updateSpaceDto);
+
+  }
+  @Get('/get-message/:id')
+  @UseGuards(JwtAuthGuard)
+  getMessage(
+    @GetUser() user: User,
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ) {
+    return this.spaceService.findMessagesById(user, id);
+  }
+  @Get('/get-all-message')
+  @UseGuards(JwtAuthGuard)
+  getAllMessages(@GetUser() user: User) {
+    return this.spaceService.findAllMessage(user);
   }
 }
