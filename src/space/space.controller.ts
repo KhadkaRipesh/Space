@@ -74,7 +74,7 @@ export class SpaceController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @GetUser() user: User,
   ) {
-    return this.spaceService.deleteSpaces(id,user);
+    return this.spaceService.deleteSpaces(id, user);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -84,6 +84,6 @@ export class SpaceController {
     @GetUser() user: User,
     @Body() updateSpaceDto: UpdateSpaceDto,
   ) {
-    return this.spaceService.editSpaceById(id,user,updateSpaceDto);
+    return this.spaceService.editSpaceById(id, user, updateSpaceDto);
   }
-  }
+}
