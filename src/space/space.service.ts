@@ -87,9 +87,7 @@ export class SpaceService {
 
   //-----------------------  Accept the invitation for space  ------------------------
 
-  async acceptSpaceInvitation(user: User, payload: AcceptInvitationDto) {
-    const { space_id, invitation } = payload;
-
+  async acceptSpaceInvitation(user: User, id: string) {
     // Get current user details.
     const currentuser = await this.dataSource
       .getRepository(User)
@@ -97,21 +95,21 @@ export class SpaceService {
 
     const share = await this.dataSource.getRepository(Share).findOne({
       where: {
-        space_id: space_id,
+        space_id: id,
         email: currentuser.email,
         hasAccess: true,
       },
     });
     if (!share) throw new BadRequestException('No space found.');
-    if (invitation === 'accept') {
-      const member = new Member();
-      member.email = currentuser.email;
-      member.space_id = space_id;
-      member.user_id = currentuser.id;
 
-      await this.dataSource.getRepository(Member).save(member);
-      return 'Now you can access the data of the space.';
-    }
+    // Register as a member
+    const member = new Member();
+    member.email = currentuser.email;
+    member.space_id = id;
+    member.user_id = currentuser.id;
+
+    await this.dataSource.getRepository(Member).save(member);
+    return { message: 'Succesfully accessed Space.', member };
   }
 
   //---------GET ACCESSIABLE SPACE --------------
