@@ -7,16 +7,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfig } from './@config/typeorm.config';
 import { SpaceModule } from './space/space.module';
 import { MessageModule } from './message/message.module';
-import { ScheduleModule } from '@nestjs/schedule';
+import { CronjobModule } from './cronjob/cronjob.module';
 
 @Module({
   imports: [
     AuthModule,
     UserModule,
     TypeOrmModule.forRootAsync({ useFactory: () => TypeOrmConfig }),
-    ScheduleModule.forRoot(),
     SpaceModule,
     MessageModule,
+    CronjobModule,
   ],
   controllers: [AppController],
   providers: [AppService],
