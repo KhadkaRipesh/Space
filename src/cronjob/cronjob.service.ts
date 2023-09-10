@@ -6,6 +6,7 @@ import { Share } from 'src/space/entities/share.entity';
 import { Space } from 'src/space/entities/space.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Reminder } from 'src/user/entities/reminder.entity';
+import { defaultMailTemplate } from 'src/@helpers/mail-templates/default.mail-template';
 
 @Injectable()
 export class CronjobService {
@@ -50,8 +51,12 @@ export class CronjobService {
             // Send Mail
             sendmail({
               to: user.email,
-              subject: 'Give access to Others?',
-              html: message,
+              subject: 'Sharing Access to Shared Email Account',
+              html: defaultMailTemplate({
+                title: 'Sharing Access to Shared Email Account',
+                name: user.username,
+                message: `You haven't logged in for 15 days. Unless you log in soon, sharing settings will reset automatically.`,
+              }),
             });
 
             // Creating reminder object
@@ -112,8 +117,11 @@ export class CronjobService {
               sendmail({
                 to: share.email,
                 subject: 'Got Space Access',
-                html: `<p>You can access the space now.</p><br>
-                  <h4>Signup and Accept the invitation.</h4>`,
+                html: defaultMailTemplate({
+                  title: 'Got Space Access',
+                  name: share.email,
+                  message: `You can access the space now. Signup and Accept the invitation.`,
+                }),
               });
             }
             // Delete the reminder
