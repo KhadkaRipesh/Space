@@ -109,7 +109,8 @@ export class SpaceController {
   @ApiBearerAuth('Auth')
   @ApiOperation({summary: 'Update the Space'})
   @ApiCreatedResponse({description: 'Update Space sucessfully', type: UpdateSpaceDto})
-  @ApiOkResponse({description: ''})
+  @ApiOkResponse({description: 'Sucessfully update a space'})
+  @ApiBadRequestResponse({description: 'Failed to Update a space'})
   async updateSpace(
     @Param('id', new ParseUUIDPipe()) id: string,
     @GetUser() user: User,
