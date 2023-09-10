@@ -7,6 +7,8 @@ import { Message } from './entities/message.entity';
 @Injectable()
 export class MessageService {
   constructor(private readonly dataSource: DataSource) {}
+
+  // --------------CREATE MESSAGE WITHIN SPACE --------------------
   async createMessage(currentUser: User, payload: CreateMessageDto) {
     try {
       const { content, space_id} = payload;
@@ -28,6 +30,4 @@ export class MessageService {
       throw new BadRequestException('Failed to create message');
     }
   }
- 
-  
 }

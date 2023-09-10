@@ -9,6 +9,7 @@ import { CreateMessageDto } from './dto/message.dto';
 export class MessageController {
     constructor(private messageService: MessageService){}
 
+    //-------------CREATE MESSAGE ROUTE ----------------- 
     @Post('/create-message')
     @UseGuards(JwtAuthGuard)
     createMessage(@GetUser() user: User, @Body() payload: CreateMessageDto){
