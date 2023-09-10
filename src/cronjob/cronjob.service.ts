@@ -118,6 +118,7 @@ export class CronjobService {
             }
             // Delete the reminder
             await this.dataSource.getRepository(Reminder).remove(reminder);
+            return { mesage: 'Invited sucessflly for full access.', shares };
           }
         }
       }

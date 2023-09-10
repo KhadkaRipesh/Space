@@ -52,12 +52,12 @@ export class SpaceController {
 
   // ----------------Accept the invitation--------------
   @UseGuards(JwtAuthGuard)
-  @Post('accept-invitation')
+  @Post('accept-invitation/:id')
   acceptSpaceInvitation(
     @GetUser() user: User,
-    @Body() payload: AcceptInvitationDto,
+    @Param('id', new ParseUUIDPipe()) id: string,
   ) {
-    return this.spaceService.acceptSpaceInvitation(user, payload);
+    return this.spaceService.acceptSpaceInvitation(user, id);
   }
 
   // To get accessiable space
