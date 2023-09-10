@@ -1,33 +1,28 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { CreateMessageDto } from './dto/message.dto';
 import { User } from 'src/user/entities/user.entity';
 import { Message } from './entities/message.entity';
+import { Member } from 'src/space/entities/space_member.entity';
 
 @Injectable()
 export class MessageService {
   constructor(private readonly dataSource: DataSource) {}
   async createMessage(currentUser: User, payload: CreateMessageDto) {
-    try {
-      const { content, space_id} = payload;
-      const user = await this.dataSource
-        .getRepository(User)
-        .findOne({ where: { id: currentUser.id } });
+    const { content, space_id } = payload;
+    // For checking if the user is has access of the space or not.
+    const user = await this.dataSource
+      .getRepository(Member)
+      .findOne({ where: { user_id: currentUser.id, space_id: space_id } });
 
-      if (!user) throw new BadRequestException('User Not Found');
-      const message = new Message();
+    if (!user) throw new UnauthorizedException('Permsion denied.');
 
-      message.content = content;
-      message.space_id = space_id;
-      console.log(message.content);
+    const message = new Message();
 
-      return await this.dataSource.getRepository(Message).save(message);
-    } catch (error) {
-      // Handle the error appropriately, e.g., logging and returning an error response
-      console.error(error);
-      throw new BadRequestException('Failed to create message');
-    }
+    message.content = content;
+    message.space_id = space_id;
+    console.log(message.content);
+
+    return await this.dataSource.getRepository(Message).save(message);
   }
- 
-  
 }

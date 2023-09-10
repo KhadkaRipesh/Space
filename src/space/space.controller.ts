@@ -85,7 +85,6 @@ export class SpaceController {
     @Body() updateSpaceDto: UpdateSpaceDto,
   ) {
     return this.spaceService.editSpaceById(id, user, updateSpaceDto);
-
   }
   @Get('/get-message/:id')
   @UseGuards(JwtAuthGuard)
