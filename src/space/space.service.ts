@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import {
@@ -16,7 +15,6 @@ import { Share } from './entities/share.entity';
 import { sendmail } from 'src/@helpers/mail';
 import { User } from 'src/user/entities/user.entity';
 import { Member } from './entities/space_member.entity';
-import { Message } from 'src/message/entities/message.entity';
 
 @Injectable()
 export class SpaceService {
