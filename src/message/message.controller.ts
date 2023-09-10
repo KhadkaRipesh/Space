@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards , Get, Param, ParseUUIDPipe} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { JwtAuthGuard } from 'src/@guards/jwt.guard';
 import { GetUser } from 'src/@docoraters/getUser.decorater';
@@ -7,7 +7,7 @@ import { CreateMessageDto } from './dto/message.dto';
 
 @Controller('message')
 export class MessageController {
-    constructor(private messageService: MessageService){}
+  constructor(private messageService: MessageService) {}
 
     //-------------CREATE MESSAGE ROUTE ----------------- 
     @Post('/create-message')

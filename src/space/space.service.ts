@@ -193,7 +193,7 @@ export class SpaceService {
     const user = await this.dataSource
       .getRepository(User)
       .findOne({ where: { id: currentUser.id } });
-      console.log(user)
+    console.log(user);
     if (!user) throw new BadRequestException('User not found');
     if (user) {
       return await this.dataSource.getRepository(Message).find();
