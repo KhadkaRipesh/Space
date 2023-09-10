@@ -77,10 +77,12 @@ export class SpaceService {
     sendmail({
       to: email,
       subject: 'Space Shared for you',
-      html: `<h1> The space is shared and you have all access of it.</h1>`,
+      html: `<h1> The space is shared with you.</h1>`,
     });
     // Saving share
     await this.dataSource.getRepository(Share).save(share);
+
+    return `Space shared to ${email}`;
   }
 
   //-----------------------  Accept the invitation for space  ------------------------

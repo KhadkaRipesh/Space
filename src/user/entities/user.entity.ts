@@ -39,6 +39,9 @@ export class User {
   @Column({ default: new Date() })
   lastActivity: Date;
 
+  @Column({ default: false })
+  hasExpired: boolean;
+
   @OneToMany(() => Reminder, (reminder) => reminder.user, { cascade: true })
   reminders: Reminder[];
 
