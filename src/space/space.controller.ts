@@ -10,7 +10,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
-  AcceptInvitationDto,
   CreateSpaceDto,
   ShareSpaceDto,
   UpdateSpaceDto,
@@ -20,6 +19,7 @@ import { JwtAuthGuard } from 'src/@guards/jwt.guard';
 import { GetUser } from 'src/@docoraters/getUser.decorater';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 
 @Controller('space')
 export class SpaceController {
@@ -31,6 +31,10 @@ export class SpaceController {
   //   -----------------Create Space---------------
   @UseGuards(JwtAuthGuard)
   @Post('create-space')
+  @ApiBearerAuth('Auth')
+  @ApiOperation({summary: 'Create a Space'})
+  @ApiCreatedResponse({description: 'Space created sucessfully', type: CreateSpaceDto})
+  @ApiBadRequestResponse({description: 'Failed to create an space'})
   async createSpace(@GetUser() user: User, @Body() payload: CreateSpaceDto) {
     // Updating user last activity
     await this.userService.updateUserActivity(user.id);
@@ -38,8 +42,13 @@ export class SpaceController {
     return this.spaceService.createSpace(user, payload);
   }
   //   -----------------Share Space----------------
-  @Post('share-space/:id')
   @UseGuards(JwtAuthGuard)
+  @Post('share-space/:id')
+  @ApiBearerAuth('Auth')
+  @ApiOperation({summary: 'Share the spaces'})
+  @ApiCreatedResponse({description: 'Share space sucessfully', type: ShareSpaceDto})
+  @ApiOkResponse({description:'share space sucessfully'})
+  @ApiBadRequestResponse({description: 'Failed to share a space.'})
   async shareSpace(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() payload: ShareSpaceDto,
@@ -53,6 +62,11 @@ export class SpaceController {
   // ----------------Accept the invitation--------------
   @UseGuards(JwtAuthGuard)
   @Post('accept-invitation/:id')
+  @ApiBearerAuth('Auth')
+  @ApiOperation({summary: 'Accept Space join invitation'})
+  @ApiCreatedResponse({description: 'accept the space joining invitation'})
+  @ApiOkResponse({description: 'Sucessfully accept the invitation'})
+  @ApiBadRequestResponse({description: 'Failed to get a space member'})
   acceptSpaceInvitation(
     @GetUser() user: User,
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -63,6 +77,10 @@ export class SpaceController {
   // To get accessiable space
   @UseGuards(JwtAuthGuard)
   @Get('get-my-space')
+  @ApiBearerAuth('Auth')
+  @ApiOperation({summary: 'Get created space'})
+  @ApiOkResponse({description: 'sucessfully get the space'})
+  @ApiBadRequestResponse({description: 'Failed to obtain the space.'})
   async getSpaces(@GetUser() user: User) {
     // Updating user last activity
     await this.userService.updateUserActivity(user.id);
@@ -71,6 +89,10 @@ export class SpaceController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
+  @ApiBearerAuth('Auth')
+  @ApiOperation({summary: 'Delete the Space'})
+  @ApiOkResponse({description: 'Sucessfully delete the space'})
+  @ApiBadRequestResponse({description: 'Failed to delete the space'})
   async removeSpace(
     @Param('id', new ParseUUIDPipe()) id: string,
     @GetUser() user: User,
@@ -84,6 +106,10 @@ export class SpaceController {
   // update Space
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
+  @ApiBearerAuth('Auth')
+  @ApiOperation({summary: 'Update the Space'})
+  @ApiCreatedResponse({description: 'Update Space sucessfully', type: UpdateSpaceDto})
+  @ApiOkResponse({description: ''})
   async updateSpace(
     @Param('id', new ParseUUIDPipe()) id: string,
     @GetUser() user: User,
