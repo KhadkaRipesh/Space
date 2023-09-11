@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -11,12 +12,13 @@ import { MessageService } from './message.service';
 import { JwtAuthGuard } from 'src/@guards/jwt.guard';
 import { GetUser } from 'src/@docoraters/getUser.decorater';
 import { User } from 'src/user/entities/user.entity';
-import { CreateMessageDto } from './dto/message.dto';
+import { CreateMessageDto, DeleteMessageDto } from './dto/message.dto';
 import { UserService } from 'src/user/user.service';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -63,5 +65,21 @@ export class MessageController {
     // Updating user last activity
     await this.userService.updateUserActivity(user.id);
     return this.messageService.findMessagesById(user, id);
+  }
+
+  // Delete Message of specific space
+  @UseGuards(JwtAuthGuard)
+  @Delete()
+  @ApiBearerAuth('Auth')
+  @ApiOperation({ summary: 'Delete message of Space' })
+  @ApiOkResponse({ description: 'Message delted Successfully' })
+  @ApiBadRequestResponse({ description: 'Failed to delte the message' })
+  @ApiNotFoundResponse({ description: 'Message not found on specific space.' })
+  async deleteMessage(
+    @GetUser() user: User,
+    @Body() payload: DeleteMessageDto,
+  ) {
+    await this.userService.updateUserActivity(user.id);
+    return this.messageService.deleteMessage(user, payload);
   }
 }
