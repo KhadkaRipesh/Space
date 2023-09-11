@@ -21,8 +21,10 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 
+@ApiTags('Space')
 @Controller('space')
 export class SpaceController {
   constructor(

@@ -10,7 +10,7 @@ import { GetUser } from 'src/@docoraters/getUser.decorater';
 import { GoogleAuthGuard } from 'src/@guards/google.guard';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
 @Controller('auth')
