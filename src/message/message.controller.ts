@@ -39,7 +39,6 @@ export class MessageController {
     description: 'Sucessfully created a message',
     type: CreateMessageDto,
   })
-  @ApiOkResponse({ description: 'Sucessfully created a message' })
   @ApiBadRequestResponse({ description: 'Failed to create a Message' })
   async createMessage(
     @GetUser() user: User,
@@ -54,8 +53,8 @@ export class MessageController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiBearerAuth('Auth')
-  @ApiOperation({ summary: 'Sucessfully get a message' })
-  @ApiOkResponse({ description: 'Sucessfully getting a message' })
+  @ApiOperation({ summary: 'Get message of Space' })
+  @ApiOkResponse({ description: 'Sucessfully getting a message of a space' })
   @ApiBadRequestResponse({ description: 'Failed to get a message' })
   async getMessage(
     @GetUser() user: User,
