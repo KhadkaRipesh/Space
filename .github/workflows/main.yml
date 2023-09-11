@@ -23,9 +23,8 @@ jobs:
 
       - name: Build application
         run: npm run build
-        
+
       - name: Deploy to VM
         run: |
-          sshpass -p 'Secret@12345' ssh -o StrictHostKeyChecking=no last-message@20.193.158.103 \
+          sshpass -p ${{secrets.SSH_PASSWORD}} ssh -o StrictHostKeyChecking=no ${{secrets.SERVER_IP}} \
           "cd /home/last-message/Space/ && git pull origin master && pm2 restart 1"
-
