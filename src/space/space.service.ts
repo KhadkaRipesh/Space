@@ -11,6 +11,7 @@ import { sendmail } from 'src/@helpers/mail';
 import { User } from 'src/user/entities/user.entity';
 import { Member } from './entities/space_member.entity';
 import { defaultMailTemplate } from 'src/@helpers/mail-templates/default.mail-template';
+import { Message } from 'src/message/entities/message.entity';
 
 @Injectable()
 export class SpaceService {
@@ -160,5 +161,23 @@ export class SpaceService {
       .update(id, { space_name: space_name });
 
     return `${member.space_id} updated successfully.`;
+  }
+  // Get overview of space
+  async getOverview(id: string) {
+    // Getting space
+    const space = await this.dataSource
+      .getRepository(Space)
+      .findOne({ where: { id } });
+
+    // If no space
+    if (!space) throw new NotFoundException('Space Not Found');
+
+    // Getting message
+    const messages = await this.dataSource.getRepository(Message).find({
+      where: { space_id: id },
+      take: 5, //Number of messages to retrive on Overview
+    });
+
+    return { id, messages };
   }
 }
