@@ -19,6 +19,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -138,5 +139,14 @@ export class SpaceController {
     // Updating user last activity
     await this.userService.updateUserActivity(user.id);
     return this.spaceService.editSpaceById(id, user, updateSpaceDto);
+  }
+
+  // Get overview of each space
+  @ApiOperation({ summary: 'Get overview of each space.' })
+  @ApiOkResponse({ description: 'Overview Displayed Successfully.' })
+  @ApiNotFoundResponse({ description: 'Space not found to get overview.' })
+  @Get('overview/:id')
+  async getOverview(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.spaceService.getOverview(id);
   }
 }

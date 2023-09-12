@@ -4,19 +4,19 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 export class CreateSpaceDto {
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({description: 'Space Name',example: 'Lancemeup Space'})
+  @ApiProperty({ description: 'Space Name', example: 'Lancemeup Space' })
   space_name: string;
 }
 export class ShareSpaceDto {
   @IsEmail()
   @IsNotEmpty()
-  @ApiProperty({description: 'Member Email', example: 'johndoe@gmail.com'})
+  @ApiProperty({ description: 'Member Email', example: 'johndoe@gmail.com' })
   email: string;
 }
 
 export class UpdateSpaceDto {
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({description: 'New Space Name',example: 'Lancemeup NewSpace'})
+  @ApiProperty({ description: 'New Space Name', example: 'Lancemeup NewSpace' })
   space_name: string;
 }
