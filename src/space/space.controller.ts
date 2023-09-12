@@ -8,6 +8,7 @@ import {
   Post,
   Patch,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { CreateSpaceDto, ShareSpaceDto, UpdateSpaceDto } from './dto/space.dto';
 import { SpaceService } from './space.service';
@@ -24,6 +25,8 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { SpaceFilterDto } from './dto/filter.dto';
+import { PaginationDto } from './dto/pagination.dto';
 
 @ApiTags('Space')
 @Controller('space')
@@ -125,12 +128,6 @@ export class SpaceController {
   })
   @ApiOkResponse({ description: 'Sucessfully update a space' })
   @ApiBadRequestResponse({ description: 'Failed to Update a space' })
-  @ApiOperation({ summary: 'Update the Space' })
-  @ApiCreatedResponse({
-    description: 'Update Space sucessfully',
-    type: UpdateSpaceDto,
-  })
-  @ApiOkResponse({ description: '' })
   async updateSpace(
     @Param('id', new ParseUUIDPipe()) id: string,
     @GetUser() user: User,
@@ -148,5 +145,19 @@ export class SpaceController {
   @Get('overview/:id')
   async getOverview(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.spaceService.getOverview(id);
+  }
+  // filter Spaces by Space Types
+
+  @ApiOperation({ summary: 'filter a Space' })
+  @ApiOkResponse({ description: 'Filter space sucessfully' })
+  @ApiNotFoundResponse({ description: 'Space Not Found' })
+  @UseGuards(JwtAuthGuard)
+  @Get('/filter-spaces/')
+  filterSpaces(
+    @GetUser() user: User,
+    @Query() query: SpaceFilterDto,
+    @Query() pagination: PaginationDto,
+  ) {
+    return this.spaceService.filterSpace(user, query, pagination);
   }
 }
