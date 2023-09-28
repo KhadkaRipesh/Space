@@ -15,23 +15,22 @@ export class CronjobService {
   //   Cron Job for checking inactive user
   @Cron(CronExpression.EVERY_10_SECONDS)
   async handleCron() {
-    const fifteenDaysAgo = new Date();
+    // Get all available spaces
+    const spaces = await this.dataSource.getRepository(Space).find();
 
-    // Checking user last activity since 15 days
-    fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
-
-    // Getting user data, not active since 15 days
-    const users = await this.dataSource.getRepository(User).find({
-      where: { lastActivity: LessThan(fifteenDaysAgo), hasExpired: false },
-    });
-
-    for (const user of users) {
-      const space = await this.dataSource
-        .getRepository(Space)
-        .findOne({ where: { user_id: user.id } });
-
-      // If user has their space
-      if (space) {
+    for (const space of spaces) {
+      const toCheck = new Date();
+      toCheck.setDate(toCheck.getDate() - space.share_access_on);
+      // Getting user data, not active since the provided date
+      const user = await this.dataSource.getRepository(User).findOne({
+        where: {
+          id: space.user_id,
+          lastActivity: LessThan(toCheck),
+          hasExpired: false,
+        },
+      });
+      // If the creator exists
+      if (user) {
         const isShare = await this.dataSource
           .getRepository(Share)
           .findOne({ where: { space_id: space.id } });
