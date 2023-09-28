@@ -10,19 +10,25 @@ import {
   UpdateDaysToCheckDTO,
   UpdateSpaceDto,
 } from './dto/space.dto';
-import { Space } from './entities/space.entity';
+import { Space, SpaceType } from './entities/space.entity';
+
 import { Share } from './entities/share.entity';
 import { sendmail } from 'src/@helpers/mail';
 import { User } from 'src/user/entities/user.entity';
 import { Member } from './entities/space_member.entity';
 import { defaultMailTemplate } from 'src/@helpers/mail-templates/default.mail-template';
 import { Message } from 'src/message/entities/message.entity';
+import { share } from 'rxjs';
+import { SpaceFilterDto } from './dto/filter.dto';
+import { PaginationDto } from './dto/pagination.dto';
+import { PaginateResponse } from 'src/@helpers/pagination';
 
 @Injectable()
 export class SpaceService {
   constructor(private readonly dataSource: DataSource) {}
 
   //   ----------Create Space--------------
+
   async createSpace(user: User, payload: CreateSpaceDto) {
     const currentuser = await this.dataSource
       .getRepository(User)
@@ -47,7 +53,6 @@ export class SpaceService {
     member.email = currentuser.email;
     member.space_id = space.id;
     member.user_id = user.id;
-
     await this.dataSource.getRepository(Member).save(member);
 
     return { space };
@@ -66,6 +71,9 @@ export class SpaceService {
     const space = await this.dataSource
       .getRepository(Space)
       .findOne({ where: { id: space_id } });
+
+    space.space_type = SpaceType.SHARED;
+    await this.dataSource.getRepository(Space).save(space);
 
     //  If space doesnot exists.
     if (!space) throw new NotFoundException('The space doesnot exists.');
@@ -185,6 +193,7 @@ export class SpaceService {
 
     return { id, messages };
   }
+
   // Change days for checking space's creator's last activity
   async changeDaysToCheckLastActivity(
     currentUser: User,
@@ -202,5 +211,42 @@ export class SpaceService {
     await this.dataSource.getRepository(Space).save(space);
 
     return `Updated Days to check the creator last activity to ${payload.days}`;
+  }
+  
+  async filterSpace(
+    currentUser: User,
+    query: SpaceFilterDto,
+    pagination: PaginationDto,
+  ) {
+    const member = await this.dataSource
+      .getRepository(Member)
+      .findOne({ where: { user_id: currentUser.id } });
+    if (!member) throw new NotFoundException('Not found or permission denied.');
+
+    const getType = query.type.toLowerCase();
+
+    if (getType === 'private' || 'shared') {
+      const numericPage = Number(pagination.page);
+      const numericLimit = Number(pagination.limit);
+      console.log(numericPage);
+      console.log(numericLimit);
+
+      if (isNaN(numericPage) || isNaN(numericLimit))
+        throw new BadRequestException('Invalid pagination parameter');
+
+      const filteredSpace = await this.dataSource
+        .getRepository(Space)
+        .createQueryBuilder('spaces')
+        .where('spaces.space_type = :type', { type: query.type })
+        .take(numericLimit)
+        .skip((numericPage - 1) * numericLimit)
+        .getManyAndCount();
+
+      if (filteredSpace.length < 1)
+        throw new BadRequestException('No Spaces Found.');
+      return PaginateResponse(filteredSpace, numericPage, numericLimit);
+    }
+    throw new BadRequestException('Filter with valid Details..');
+
   }
 }

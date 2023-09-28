@@ -8,6 +8,7 @@ import {
   Post,
   Patch,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
   CreateSpaceDto,
@@ -29,6 +30,8 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { SpaceFilterDto } from './dto/filter.dto';
+import { PaginationDto } from './dto/pagination.dto';
 
 @ApiTags('Space')
 @Controller('space')
@@ -163,5 +166,19 @@ export class SpaceController {
       space_id,
       payload,
     );
+
+  // filter Spaces by Space Types
+
+  @ApiOperation({ summary: 'filter a Space' })
+  @ApiOkResponse({ description: 'Filter space sucessfully' })
+  @ApiNotFoundResponse({ description: 'Space Not Found' })
+  @UseGuards(JwtAuthGuard)
+  @Get('/filter-spaces/')
+  filterSpaces(
+    @GetUser() user: User,
+    @Query() query: SpaceFilterDto,
+    @Query() pagination: PaginationDto,
+  ) {
+    return this.spaceService.filterSpace(user, query, pagination);
   }
 }
