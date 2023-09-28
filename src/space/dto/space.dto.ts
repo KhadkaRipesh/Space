@@ -20,3 +20,11 @@ export class UpdateSpaceDto {
   @ApiProperty({ description: 'New Space Name', example: 'Lancemeup NewSpace' })
   space_name: string;
 }
+
+export class UpdateDaysToCheckDTO {
+  @ApiProperty({
+    description: 'Days to check the creator last activity',
+    example: '10',
+  })
+  days: number;
+}
