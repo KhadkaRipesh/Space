@@ -18,7 +18,6 @@ import { User } from 'src/user/entities/user.entity';
 import { Member } from './entities/space_member.entity';
 import { defaultMailTemplate } from 'src/@helpers/mail-templates/default.mail-template';
 import { Message } from 'src/message/entities/message.entity';
-import { share } from 'rxjs';
 import { SpaceFilterDto } from './dto/filter.dto';
 import { PaginationDto } from './dto/pagination.dto';
 import { PaginateResponse } from 'src/@helpers/pagination';
@@ -212,7 +211,7 @@ export class SpaceService {
 
     return `Updated Days to check the creator last activity to ${payload.days}`;
   }
-  
+
   async filterSpace(
     currentUser: User,
     query: SpaceFilterDto,
@@ -247,6 +246,5 @@ export class SpaceService {
       return PaginateResponse(filteredSpace, numericPage, numericLimit);
     }
     throw new BadRequestException('Filter with valid Details..');
-
   }
 }
