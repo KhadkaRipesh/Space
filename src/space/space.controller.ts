@@ -10,7 +10,12 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { CreateSpaceDto, ShareSpaceDto, UpdateSpaceDto } from './dto/space.dto';
+import {
+  CreateSpaceDto,
+  ShareSpaceDto,
+  UpdateDaysToCheckDTO,
+  UpdateSpaceDto,
+} from './dto/space.dto';
 import { SpaceService } from './space.service';
 import { JwtAuthGuard } from 'src/@guards/jwt.guard';
 import { GetUser } from 'src/@docoraters/getUser.decorater';
@@ -122,10 +127,6 @@ export class SpaceController {
   @Patch(':id')
   @ApiBearerAuth('Auth')
   @ApiOperation({ summary: 'Update the Space' })
-  @ApiCreatedResponse({
-    description: 'Update Space sucessfully',
-    type: UpdateSpaceDto,
-  })
   @ApiOkResponse({ description: 'Sucessfully update a space' })
   @ApiBadRequestResponse({ description: 'Failed to Update a space' })
   async updateSpace(
@@ -146,6 +147,26 @@ export class SpaceController {
   async getOverview(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.spaceService.getOverview(id);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('Auth')
+  @ApiOperation({
+    summary: 'Update the days to check the last activity of space creator.',
+  })
+  @ApiOkResponse({ description: 'Sucessfully update days' })
+  @ApiBadRequestResponse({ description: 'Failed to Update days' })
+  @Patch('change-days/:space_id')
+  changeDaysToCheckLastActivity(
+    @GetUser() user: User,
+    @Param('space_id', new ParseUUIDPipe()) space_id: string,
+    @Body() payload: UpdateDaysToCheckDTO,
+  ) {
+    return this.spaceService.changeDaysToCheckLastActivity(
+      user,
+      space_id,
+      payload,
+    );
+
   // filter Spaces by Space Types
 
   @ApiOperation({ summary: 'filter a Space' })

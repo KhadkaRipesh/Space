@@ -4,8 +4,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { CreateSpaceDto, ShareSpaceDto, UpdateSpaceDto } from './dto/space.dto';
+import {
+  CreateSpaceDto,
+  ShareSpaceDto,
+  UpdateDaysToCheckDTO,
+  UpdateSpaceDto,
+} from './dto/space.dto';
 import { Space, SpaceType } from './entities/space.entity';
+
 import { Share } from './entities/share.entity';
 import { sendmail } from 'src/@helpers/mail';
 import { User } from 'src/user/entities/user.entity';
@@ -187,6 +193,26 @@ export class SpaceService {
 
     return { id, messages };
   }
+
+  // Change days for checking space's creator's last activity
+  async changeDaysToCheckLastActivity(
+    currentUser: User,
+    space_id: string,
+    payload: UpdateDaysToCheckDTO,
+  ) {
+    const space = await this.dataSource
+      .getRepository(Space)
+      .findOne({ where: { id: space_id, user_id: currentUser.id } });
+
+    if (space) throw new BadRequestException('Space not found.');
+
+    space.share_access_on = payload.days;
+
+    await this.dataSource.getRepository(Space).save(space);
+
+    return `Updated Days to check the creator last activity to ${payload.days}`;
+  }
+  
   async filterSpace(
     currentUser: User,
     query: SpaceFilterDto,
@@ -221,5 +247,6 @@ export class SpaceService {
       return PaginateResponse(filteredSpace, numericPage, numericLimit);
     }
     throw new BadRequestException('Filter with valid Details..');
+
   }
 }
