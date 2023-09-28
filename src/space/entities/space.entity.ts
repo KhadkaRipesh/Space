@@ -31,8 +31,8 @@ export class Space {
   @CreateDateColumn()
   createdAt: Date;
 
-  @Column({type: 'enum',  enum: SpaceType, default: SpaceType.PRIVATE})
-  space_type: SpaceType
+  @Column({ type: 'enum', enum: SpaceType, default: SpaceType.PRIVATE })
+  space_type: SpaceType;
 
   @OneToMany(() => Message, (message) => message.space, { cascade: true })
   messages: Message[];

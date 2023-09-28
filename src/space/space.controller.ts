@@ -166,6 +166,7 @@ export class SpaceController {
       space_id,
       payload,
     );
+  }
 
   // filter Spaces by Space Types
 

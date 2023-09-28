@@ -35,11 +35,6 @@ export class CronjobService {
           .getRepository(Share)
           .findOne({ where: { space_id: space.id } });
 
-        // if (isShare.space_id == space.id) {
-        //   space.space_type = SpaceType.SHARED;
-        // }
-        // await this.dataSource.getRepository(Space).save(isShare);
-
         //   If user shares any space then,
         if (isShare) {
           // Getting reminder data
