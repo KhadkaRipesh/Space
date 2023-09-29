@@ -1,4 +1,3 @@
-import { Space } from 'src/space/entities/space.entity';
 import {
   Column,
   CreateDateColumn,

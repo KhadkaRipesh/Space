@@ -46,6 +46,9 @@ export class SpaceService {
     const space = new Space();
     space.space_name = payload.space_name;
     space.user_id = user.id;
+    space.isAnnonymous = payload.isAnnonymous;
+    space.share_access_on = payload.share_access_on;
+    space.checkUnrespondHoursTime = payload.checkUnrespondHoursTime;
     await this.dataSource.getRepository(Space).save(space);
 
     // Add creater also as member
@@ -83,6 +86,25 @@ export class SpaceService {
     share.email = email;
     share.space_id = space_id;
     share.user_id = user.id;
+
+    // If space is annonymous
+    if (space.isAnnonymous) {
+      share.hasAccess = true;
+
+      sendmail({
+        to: email,
+        subject: 'Space Shared with You',
+        html: defaultMailTemplate({
+          title: 'Space Shared with You',
+          name: share.email,
+          message: `We are excited to inform you that a space has been shared with you. Accept the invitation.`,
+        }),
+      });
+      // Saving share
+      await this.dataSource.getRepository(Share).save(share);
+
+      return `Space shared to ${email}`;
+    }
 
     sendmail({
       to: email,
