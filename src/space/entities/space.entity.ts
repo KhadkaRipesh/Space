@@ -28,6 +28,9 @@ export class Space {
   @Column({ default: 15 })
   share_access_on: number;
 
+  @Column({ default: 42 })
+  checkUnrespondHoursTime: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
