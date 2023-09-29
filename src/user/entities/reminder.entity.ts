@@ -18,6 +18,9 @@ export class Reminder {
   message: string;
 
   @Column()
+  toCheckUnrespondHours: number;
+
+  @Column()
   user_id: string;
   @ManyToOne(() => User, (user) => user.reminders, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })

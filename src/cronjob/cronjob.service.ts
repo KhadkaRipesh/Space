@@ -54,7 +54,7 @@ export class CronjobService {
               html: defaultMailTemplate({
                 title: 'Sharing Access to Shared Email Account',
                 name: user.username,
-                message: `You haven't logged in for 15 days. Unless you log in soon, sharing settings will reset automatically.`,
+                message: `You haven't logged in for ${space.share_access_on} days. Unless you log in soon, sharing settings will reset automatically.`,
               }),
             });
 
@@ -63,6 +63,7 @@ export class CronjobService {
             reminder.message = message;
             reminder.user_id = user.id;
             reminder.hasResponed = false;
+            reminder.toCheckUnrespondHours = space.checkUnrespondHoursTime;
 
             // Saving Reminder
             await this.dataSource.getRepository(Reminder).save(reminder);
@@ -76,9 +77,6 @@ export class CronjobService {
   //   Cron job for not responding reminders
   @Cron(CronExpression.EVERY_10_SECONDS)
   async handleCron2() {
-    const hoursToCheck = 42 * 60 * 60 * 1000; // converting to milliseconds
-    // const hoursToCheck = 20 * 1000;
-
     // Getting unresponed reminder
     const reminders = await this.dataSource
       .getRepository(Reminder)
@@ -90,6 +88,7 @@ export class CronjobService {
         const currentDate = new Date();
         const createdDate = reminder.createdAt;
         const timeDiff = currentDate.getTime() - createdDate.getTime();
+        const hoursToCheck = reminder.toCheckUnrespondHours * 60 * 60 * 1000; // converting to milliseconds
 
         // Checking time difference between current and created time of remainder with hours to check
         if (timeDiff >= hoursToCheck) {
