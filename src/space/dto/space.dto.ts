@@ -1,11 +1,33 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateSpaceDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ description: 'Space Name', example: 'Lancemeup Space' })
   space_name: string;
+
+  @ApiPropertyOptional({
+    description: 'Days to check the creator last activity.',
+    example: '15',
+  })
+  @IsNumber()
+  @IsOptional()
+  share_access_on: number;
+
+  @ApiPropertyOptional({
+    description: 'Hours to check the unrespond reminder.',
+    example: '15',
+  })
+  @IsNumber()
+  @IsOptional()
+  checkUnrespondHoursTime: number;
 }
 export class ShareSpaceDto {
   @IsEmail()
@@ -27,4 +49,12 @@ export class UpdateDaysToCheckDTO {
     example: '10',
   })
   days: number;
+}
+
+export class UpdateHoursToCheckDTO {
+  @ApiProperty({
+    description: 'Hours to check the un respond reminder.',
+    example: '42',
+  })
+  hours: number;
 }

@@ -14,6 +14,7 @@ import {
   CreateSpaceDto,
   ShareSpaceDto,
   UpdateDaysToCheckDTO,
+  UpdateHoursToCheckDTO,
   UpdateSpaceDto,
 } from './dto/space.dto';
 import { SpaceService } from './space.service';
@@ -181,5 +182,25 @@ export class SpaceController {
     @Query() pagination: PaginationDto,
   ) {
     return this.spaceService.filterSpace(user, query, pagination);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('Auth')
+  @ApiOperation({
+    summary: 'Update the hours to check the unrespond reminder',
+  })
+  @ApiOkResponse({ description: 'Sucessfully updated hours' })
+  @ApiBadRequestResponse({ description: 'Failed to Updated hours' })
+  @Patch('change-hours/:space_id')
+  changeHoursToCheckReminder(
+    @GetUser() user: User,
+    @Param('space_id', new ParseUUIDPipe()) space_id: string,
+    @Body() payload: UpdateHoursToCheckDTO,
+  ) {
+    return this.spaceService.changeHoursToCheckReminder(
+      user,
+      space_id,
+      payload,
+    );
   }
 }
