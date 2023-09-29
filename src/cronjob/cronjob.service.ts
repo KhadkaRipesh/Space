@@ -3,7 +3,7 @@ import { DataSource, LessThan } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { sendmail } from 'src/@helpers/mail';
 import { Share } from 'src/space/entities/share.entity';
-import { Space, SpaceType } from 'src/space/entities/space.entity';
+import { Space } from 'src/space/entities/space.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Reminder } from 'src/user/entities/reminder.entity';
 import { defaultMailTemplate } from 'src/@helpers/mail-templates/default.mail-template';

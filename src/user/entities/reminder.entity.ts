@@ -17,7 +17,7 @@ export class Reminder {
   @Column()
   message: string;
 
-  @Column()
+  @Column({ default: 42 })
   toCheckUnrespondHours: number;
 
   @Column()

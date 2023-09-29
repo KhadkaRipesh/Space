@@ -8,6 +8,7 @@ import {
   CreateSpaceDto,
   ShareSpaceDto,
   UpdateDaysToCheckDTO,
+  UpdateHoursToCheckDTO,
   UpdateSpaceDto,
 } from './dto/space.dto';
 import { Space, SpaceType } from './entities/space.entity';
@@ -246,5 +247,24 @@ export class SpaceService {
       return PaginateResponse(filteredSpace, numericPage, numericLimit);
     }
     throw new BadRequestException('Filter with valid Details..');
+  }
+
+  // Change hours for checking un respond reminders
+  async changeHoursToCheckReminder(
+    currentUser: User,
+    space_id: string,
+    payload: UpdateHoursToCheckDTO,
+  ) {
+    const space = await this.dataSource
+      .getRepository(Space)
+      .findOne({ where: { id: space_id, user_id: currentUser.id } });
+
+    if (space) throw new BadRequestException('Space not found.');
+
+    space.checkUnrespondHoursTime = payload.hours;
+
+    await this.dataSource.getRepository(Space).save(space);
+
+    return `Updated hours to check the un responded reminder to ${payload.hours}`;
   }
 }
