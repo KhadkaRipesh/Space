@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsEmail,
   IsNotEmpty,
   IsNumber,
@@ -12,6 +13,11 @@ export class CreateSpaceDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'Space Name', example: 'Lancemeup Space' })
   space_name: string;
+
+  @ApiPropertyOptional({ description: 'Make space annonymous', example: true })
+  @IsBoolean()
+  @IsOptional()
+  isAnnonymous: boolean;
 
   @ApiPropertyOptional({
     description: 'Days to check the creator last activity.',

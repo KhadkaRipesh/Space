@@ -25,6 +25,9 @@ export class Space {
   @Column()
   space_name: string;
 
+  @Column({ default: false })
+  isAnnonymous: boolean;
+
   @Column({ default: 15 })
   share_access_on: number;
 
